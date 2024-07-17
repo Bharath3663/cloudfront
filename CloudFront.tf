@@ -15,7 +15,6 @@ resource "aws_s3_bucket_acl" "b_acl" {
   acl    = var.acl
 }
 
-# Define CloudFront origin ID (local value)
 locals {
   s3_origin_id = "myS3Origin"
 }
