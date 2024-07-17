@@ -15,7 +15,7 @@ variable "acl" {
 
 variable "comment" {
   type = string
-  default = "Some comment"
+  default = "1st comment"
 }
 
 variable "default_root_object" {
