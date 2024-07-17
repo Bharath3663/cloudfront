@@ -62,9 +62,6 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     max_ttl = 86400
   }
 
-  # Ordered cache behaviors (modify as needed)
-  # ... (you can add additional ordered_cache_behavior blocks here)
-
   price_class = var.price_class
 
   restrictions {
