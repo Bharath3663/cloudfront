@@ -10,7 +10,6 @@ resource "aws_s3_bucket" "b" {
   }
 }
 
-# Set S3 bucket ACL
 resource "aws_s3_bucket_acl" "b_acl" {
   bucket = aws_s3_bucket.b.id
   acl    = var.acl
