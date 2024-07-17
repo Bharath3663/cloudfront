@@ -19,7 +19,6 @@ locals {
   s3_origin_id = "myS3Origin"
 }
 
-# Create CloudFront distribution
 resource "aws_cloudfront_distribution" "s3_distribution" {
   origin {
     domain_name = aws_s3_bucket.b.bucket_regional_domain_name
