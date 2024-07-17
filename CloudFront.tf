@@ -75,3 +75,78 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   }
 }
 
+# Configure AWS provider
+provider "aws" {
+  region = "us-east-1"  # Update with your desired region
+}
+
+# Create S3 buckets (modify names as needed)
+resource "aws_s3_bucket" "primary" {
+  bucket = var.bucket_name_primary
+
+  tags = {
+    Name = "Primary S3 Bucket"
+  }
+
+  acl = var.acl
+}
+
+resource "aws_s3_bucket" "failover" {
+  bucket = var.bucket_name_failover
+
+  tags = {
+    Name = "Failover S3 Bucket"
+  }
+
+  acl = var.acl
+}
+
+# Define CloudFront origin access identity (optional, comment out if using default)
+# resource "aws_cloudfront_origin_access_identity" "default" { }
+
+# Origin Group definition
+resource "aws_cloudfront_origin_group" "s3_group" {
+
+  origin_id = "groupS3"
+
+  failover_criteria {
+    status_codes = [403, 404, 500, 502]
+  }
+
+  member {
+    origin_id = "primaryS3"
+  }
+
+  member {
+    origin_id = "failoverS3"
+  }
+}
+
+# Primary S3 Origin definition
+resource "aws_cloudfront_origin" "primary_s3" {
+  domain_name = aws_s3_bucket.primary.bucket_regional_domain_name
+  origin_id = "primaryS3"
+
+  s3_origin_config {
+    origin_access_identity = aws_cloudfront_origin_access_identity.default.cloudfront_access_identity_path  # Uncomment if using OAI
+    # Alternatively, set the ARN directly if OAI path is not available
+  }
+}
+
+# Failover S3 Origin definition
+resource "aws_cloudfront_origin" "failover_s3" {
+  domain_name = aws_s3_bucket.failover.bucket_regional_domain_name
+  origin_id = "failoverS3"
+
+  s3_origin_config {
+    origin_access_identity = aws_cloudfront_origin_access_identity.default.cloudfront_access_identity_path  # Uncomment if using OAI
+    # Alternatively, set the ARN directly if OAI path is not available
+  }
+}
+
+# CloudFront distribution definition
+resource "aws_cloudfront_distribution" "s3_distribution" {
+  origin_group {
+    origin_id = aws_cloudfront_origin_group.
+
+
